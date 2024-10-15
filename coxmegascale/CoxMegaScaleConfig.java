@@ -189,19 +189,20 @@ public interface CoxMegaScaleConfig extends Config
         }
     }
 
-    @ConfigSection(
-            name = "Overlays",
-            description = "Toggle visibility of different overlays",
-            position = 1
+    @ConfigItem(
+            keyName = "enableSuppliesCalculationOverlay",
+            name = "Enable Supplies Calculation Overlay",
+            description = "Show Supplies Calculation Overlay with Overloads, Fish, and Golpar counts."
     )
-    String overlaysSection = "overlays";
+    default boolean enableSuppliesCalculationOverlay()
+    {
+        return true;
+    }
 
     @ConfigItem(
             keyName = "enablePointsOverlay",
             name = "Enable Points Overlay",
-            description = "Toggle the points overlay",
-            position = 1,
-            section = overlaysSection
+            description = "Show Points Overlay with Total Points and Lost Points."
     )
     default boolean enablePointsOverlay()
     {
@@ -211,23 +212,9 @@ public interface CoxMegaScaleConfig extends Config
     @ConfigItem(
             keyName = "enableDropChanceOverlay",
             name = "Enable Drop Chance Overlay",
-            description = "Toggle the drop chance overlay",
-            position = 2,
-            section = overlaysSection
+            description = "Show Drop Chance Overlay with Unique Chance and Fixed Chance."
     )
     default boolean enableDropChanceOverlay()
-    {
-        return true;
-    }
-
-    @ConfigItem(
-            keyName = "enableSuppliesCalculationOverlay",
-            name = "Enable Supplies Calculation Overlay",
-            description = "Toggle the supplies calculation overlay",
-            position = 3,
-            section = overlaysSection
-    )
-    default boolean enableSuppliesCalculationOverlay()
     {
         return true;
     }
