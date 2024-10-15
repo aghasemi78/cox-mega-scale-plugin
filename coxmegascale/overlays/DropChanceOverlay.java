@@ -1,40 +1,74 @@
+// File: DropChanceOverlay.java
 package net.runelite.client.plugins.coxmegascale.overlays;
 
 import javax.inject.Inject;
-import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayPanel;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.components.LayoutableRenderableEntity;
-import net.runelite.client.ui.overlay.components.TextComponent;
-import net.runelite.client.ui.overlay.components.PanelComponent;
-import net.runelite.client.plugins.coxmegascale.util.Utils;
+import net.runelite.client.ui.overlay.OverlayPriority;
+import net.runelite.client.ui.overlay.components.LineComponent;
+import net.runelite.client.ui.overlay.components.TitleComponent;
+import lombok.extern.slf4j.Slf4j;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import net.runelite.client.plugins.coxmegascale.CoxMegaScaleConfig;
 
-public class DropChanceOverlay extends Overlay
+@Slf4j
+public class DropChanceOverlay extends OverlayPanel
 {
-    private final PanelComponent panelComponent = new PanelComponent();
+    private final CoxMegaScaleConfig config;
 
     @Inject
-    public DropChanceOverlay()
+    public DropChanceOverlay(CoxMegaScaleConfig config)
     {
-        setPosition(OverlayPosition.TOP_CENTER);
+        this.config = config;
+        setPosition(OverlayPosition.TOP_LEFT);
         setLayer(OverlayLayer.ABOVE_WIDGETS);
+        setPriority(OverlayPriority.LOW); // Optional: Set overlay priority if needed
     }
 
     @Override
     public Dimension render(Graphics2D graphics)
     {
-        panelComponent.getChildren().clear();
+        if (!config.enableDropChanceOverlay())
+        {
+            return null;
+        }
 
-        // Create and configure the TextComponent
-        TextComponent textComponent = new TextComponent();
-        textComponent.setText("this is the drop chance overlay");
+        try {
+            panelComponent.getChildren().clear();
 
-        // Add the TextComponent to the PanelComponent
-        panelComponent.getChildren().add((LayoutableRenderableEntity) textComponent);
+            // Create and configure the TitleComponent
+            TitleComponent title = TitleComponent.builder()
+                    .text("Drop Chances")
+                    .color(Color.WHITE)
+                    .build();
+            panelComponent.getChildren().add(title);
 
-        // Render the panel
-        return panelComponent.render(graphics);
+            // Example LineComponents with sample data
+            LineComponent uniqueChanceLine = LineComponent.builder()
+                    .left("Unique Chance:")
+                    .right("20%")
+                    .rightColor(Color.ORANGE)
+                    .build();
+            panelComponent.getChildren().add(uniqueChanceLine);
+
+            LineComponent sampleChanceLine = LineComponent.builder()
+                    .left("Sample Chance:")
+                    .right("10%")
+                    .rightColor(Color.ORANGE)
+                    .build();
+            panelComponent.getChildren().add(sampleChanceLine);
+
+            // Add more LineComponents as needed for dynamic data
+
+            // Render the panel
+            return super.render(graphics);
+        } catch (Exception e) {
+            log.error("Error rendering DropChanceOverlay: ", e);
+            return null;
+        }
     }
 }
